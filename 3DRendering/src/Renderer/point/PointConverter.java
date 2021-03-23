@@ -1,0 +1,58 @@
+package Renderer.point;
+
+import java.awt.Point;
+
+import Renderer.Display;
+
+public class PointConverter {
+	
+	private static double scale = 1; 
+
+	public static Point convert(Point3D point3D) {
+		double x3d = point3D.y * scale;
+		double y3d = point3D.z * scale;
+		double depth = point3D.x * scale;
+		double[] newVal = scale(x3d,y3d,depth);
+		int x2d = (int) (Display.WIDTH / 2 + newVal[0]);
+		int y2d = (int) (Display.HEIGHT / 2 - newVal[1]);
+
+		Point point2D = new Point(x2d, y2d);
+		return point2D;
+	}
+	
+	public static double[] scale(double x3d, double y3d, double depth) {
+		double dist = Math.sqrt(x3d*x3d + y3d*y3d);
+		double theta = Math.atan2(x3d, y3d);
+		double depth2 = 15 - depth;
+		double localScale = Math.abs(1400/(depth2+1400));
+		dist*= localScale;
+		double[] newVal = new double[2];
+		newVal[0] = dist * Math.sin(theta);
+		newVal[1] = dist * Math.cos(theta);
+		return newVal;
+	} 
+
+	public static void rotateAxisX(Point3D p, boolean CW, int degrees) {
+		double radius = Math.sqrt(p.y*p.y + p.z*p.z);
+		double theta = Math.atan2(p.z, p.y);
+		theta += 2*Math.PI/360*degrees*(CW?-1:1);
+		p.y = radius * Math.cos(theta);
+		p.z = radius * Math.sin(theta);
+	}
+	
+	public static void rotateAxisY(Point3D p, boolean CW, int degrees) {
+		double radius = Math.sqrt(p.x*p.x + p.z*p.z);
+		double theta = Math.atan2(p.x, p.z);
+		theta += 2*Math.PI/360*degrees*(CW?-1:1);
+		p.x = radius * Math.sin(theta);
+		p.z = radius * Math.cos(theta);
+	}
+	
+	public static void rotateAxisZ(Point3D p, boolean CW, int degrees) {
+		double radius = Math.sqrt(p.x*p.x + p.y*p.y);
+		double theta = Math.atan2(p.x, p.y);
+		theta += 2*Math.PI/360*degrees*(CW?-1:1);
+		p.x = radius * Math.sin(theta);
+		p.y = radius * Math.cos(theta);
+	}
+}
