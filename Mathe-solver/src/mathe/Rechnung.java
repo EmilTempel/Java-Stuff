@@ -88,7 +88,7 @@ public class Rechnung {
 	}
 
 	public static void main(String[] args) {
-		String rechnung = "(2*(2+2)) * x";
+		String rechnung = "(2*(6+9)) * x";
 		Rechnung r = new Rechnung(rechnung);
 		System.out.println(r.print() + " = " + r.calc());
 		
